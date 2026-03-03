@@ -1,0 +1,7 @@
+#
+# ~/.bash_profile
+#
+
+eval $(keychain --eval --quiet github_ed25519)
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
