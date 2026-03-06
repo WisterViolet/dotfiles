@@ -41,7 +41,7 @@ create_autocmd('BufWritePre', {
         local dir = vim.fs.dirname(event.file)
         local force = vim.v.cmdbang == 1
         if vim.fn.isdirectory(dir) == 0
-                and (force or vim.fn.confirm('"' .. dir .. '" does not exist. Create?', "&Yes\n&No") == 1) then
+            and (force or vim.fn.confirm('"' .. dir .. '" does not exist. Create?', "&Yes\n&No") == 1) then
             vim.fn.mkdir(vim.fn.iconv(dir, vim.opt.encoding:get(), vim.opt.termencoding:get()), 'p')
         end
     end,
@@ -49,17 +49,17 @@ create_autocmd('BufWritePre', {
 })
 
 --keymap
-vim.keymap.set({'i','x'},'jj', '<esc>', {desc = 'jj escape'})
-vim.keymap.set({'n'},'p', 'p`]', {desc = 'Paste and move to the end'})
-vim.keymap.set({'n'},'P', 'P`]', {desc = 'Paste and move to the top'})
-vim.keymap.set({'x'},'p', 'P', {desc = 'Paste without change register'})
-vim.keymap.set({'x'},'P', 'p', {desc = 'Paste with change register'})
+vim.keymap.set({ 'i', 'x' }, 'jj', '<esc>', { desc = 'jj escape' })
+vim.keymap.set({ 'n' }, 'p', 'p`]', { desc = 'Paste and move to the end' })
+vim.keymap.set({ 'n' }, 'P', 'P`]', { desc = 'Paste and move to the top' })
+vim.keymap.set({ 'x' }, 'p', 'P', { desc = 'Paste without change register' })
+vim.keymap.set({ 'x' }, 'P', 'p', { desc = 'Paste with change register' })
 
 -- abbreviation only for ex-command
 local function abbrev_excmd(lhs, rhs, opts)
-  vim.keymap.set('ca', lhs, function()
-    return vim.fn.getcmdtype() == ':' and rhs or lhs
-  end, vim.tbl_extend('force', { expr = true }, opts))
+    vim.keymap.set('ca', lhs, function()
+        return vim.fn.getcmdtype() == ':' and rhs or lhs
+    end, vim.tbl_extend('force', { expr = true }, opts))
 end
 
 -- Clone 'mini.nvim' manually in a way that it gets managed by 'mini.deps'
@@ -77,7 +77,7 @@ if not vim.loop.fs_stat(mini_path) then
 end
 
 -- Set up 'mini.deps' (customize to your liking)
-require('mini.deps').setup({ path = { package = path_package }})
+require('mini.deps').setup({ path = { package = path_package } })
 
 local add, now, later = MiniDeps.add, MiniDeps.now, MiniDeps.later
 
@@ -90,24 +90,24 @@ now(function()
     vim.opt.laststatus = 3
     vim.opt.cmdheight = 0
     create_autocmd({ 'RecordingEnter', 'CmdlineEnter' }, {
-    pattern = '*',
-    callback = function()
-        vim.opt.cmdheight = 1
-    end,
+        pattern = '*',
+        callback = function()
+            vim.opt.cmdheight = 1
+        end,
     })
     create_autocmd('RecordingLeave', {
-    pattern = '*',
-    callback = function()
-        vim.opt.cmdheight = 0
-    end,
+        pattern = '*',
+        callback = function()
+            vim.opt.cmdheight = 0
+        end,
     })
     create_autocmd('CmdlineLeave', {
-    pattern = '*',
-    callback = function()
-        if vim.fn.reg_recording() == '' then
-        vim.opt.cmdheight = 0
-        end
-    end,
+        pattern = '*',
+        callback = function()
+            if vim.fn.reg_recording() == '' then
+                vim.opt.cmdheight = 0
+            end
+        end,
     })
 end)
 
@@ -127,123 +127,282 @@ now(function()
 end)
 
 later(function()
-  local hipatterns = require('mini.hipatterns')
-  local hi_words = require('mini.extra').gen_highlighter.words
-  hipatterns.setup({
-    highlighters = {
-      -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
-      fixme = hi_words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
-      hack = hi_words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
-      todo = hi_words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
-      note = hi_words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
-      -- Highlight hex color strings (`#rrggbb`) using that color
-      hex_color = hipatterns.gen_highlighter.hex_color(),
-    },
-  })
+    local hipatterns = require('mini.hipatterns')
+    local hi_words = require('mini.extra').gen_highlighter.words
+    hipatterns.setup({
+        highlighters = {
+            -- Highlight standalone 'FIXME', 'HACK', 'TODO', 'NOTE'
+            fixme = hi_words({ 'FIXME', 'Fixme', 'fixme' }, 'MiniHipatternsFixme'),
+            hack = hi_words({ 'HACK', 'Hack', 'hack' }, 'MiniHipatternsHack'),
+            todo = hi_words({ 'TODO', 'Todo', 'todo' }, 'MiniHipatternsTodo'),
+            note = hi_words({ 'NOTE', 'Note', 'note' }, 'MiniHipatternsNote'),
+            -- Highlight hex color strings (`#rrggbb`) using that color
+            hex_color = hipatterns.gen_highlighter.hex_color(),
+        },
+    })
 end)
 
 later(function()
-  require('mini.cursorword').setup()
+    require('mini.cursorword').setup()
 end)
 
 later(function()
-  require('mini.indentscope').setup()
+    require('mini.indentscope').setup()
 end)
 
 later(function()
-  require('mini.trailspace').setup()
-  vim.api.nvim_create_user_command(
-      'Trim',
-      function()
-          MiniTrailspace.trim()
-          MiniTrailspace.trim_last_lines()
-      end,
-      {desc = "Trim trailing space and last blank lines"}
-  )
+    require('mini.trailspace').setup()
+    vim.api.nvim_create_user_command(
+        'Trim',
+        function()
+            MiniTrailspace.trim()
+            MiniTrailspace.trim_last_lines()
+        end,
+        { desc = "Trim trailing space and last blank lines" }
+    )
 end)
 
 now(function()
-  require('mini.starter').setup()
+    require('mini.starter').setup()
 end)
 
 later(function()
-  require('mini.pairs').setup()
+    require('mini.pairs').setup()
 end)
 
 later(function()
-  require('mini.surround').setup()
+    require('mini.surround').setup()
 end)
 
 later(function()
-  local gen_ai_spec = require('mini.extra').gen_ai_spec
-  require('mini.ai').setup({
-    custom_textobjects = {
-      B = gen_ai_spec.buffer(),
-      D = gen_ai_spec.diagnostic(),
-      I = gen_ai_spec.indent(),
-      L = gen_ai_spec.line(),
-      N = gen_ai_spec.number(),
-      J = { { '()%d%d%d%d%-%d%d%-%d%d()', '()%d%d%d%d%/%d%d%/%d%d()' } }
-    },
-  })
+    local gen_ai_spec = require('mini.extra').gen_ai_spec
+    require('mini.ai').setup({
+        custom_textobjects = {
+            B = gen_ai_spec.buffer(),
+            D = gen_ai_spec.diagnostic(),
+            I = gen_ai_spec.indent(),
+            L = gen_ai_spec.line(),
+            N = gen_ai_spec.number(),
+            J = { { '()%d%d%d%d%-%d%d%-%d%d()', '()%d%d%d%d%/%d%d%/%d%d()' } }
+        },
+    })
 end)
 
 later(function()
-  local function mode_nx(keys)
-    return { mode = 'n', keys = keys }, { mode = 'x', keys = keys }
-  end
-  local clue = require('mini.clue')
-  clue.setup({
-    triggers = {
-      -- Leader triggers
-      mode_nx('<leader>'),
+    local function mode_nx(keys)
+        return { mode = 'n', keys = keys }, { mode = 'x', keys = keys }
+    end
+    local clue = require('mini.clue')
+    clue.setup({
+        triggers = {
+            -- Leader triggers
+            mode_nx('<leader>'),
 
-      -- Built-in completion
-      { mode = 'i', keys = '<c-x>' },
+            -- Built-in completion
+            { mode = 'i', keys = '<c-x>' },
 
-      -- `g` key
-      mode_nx('g'),
+            -- `g` key
+            mode_nx('g'),
 
-      -- Marks
-      mode_nx("'"),
-      mode_nx('`'),
+            -- Marks
+            mode_nx("'"),
+            mode_nx('`'),
 
-      -- Registers
-      mode_nx('"'),
-      { mode = 'i', keys = '<c-r>' },
-      { mode = 'c', keys = '<c-r>' },
+            -- Registers
+            mode_nx('"'),
+            { mode = 'i', keys = '<c-r>' },
+            { mode = 'c', keys = '<c-r>' },
 
-      -- Window commands
-      { mode = 'n', keys = '<c-w>' },
+            -- Window commands
+            { mode = 'n', keys = '<c-w>' },
 
-      -- bracketed commands
-      { mode = 'n', keys = '[' },
-      { mode = 'n', keys = ']' },
+            -- bracketed commands
+            { mode = 'n', keys = '[' },
+            { mode = 'n', keys = ']' },
 
-      -- `z` key
-      mode_nx('z'),
+            -- `z` key
+            mode_nx('z'),
 
-      -- surround
-      mode_nx('s'),
+            -- surround
+            mode_nx('s'),
 
-      -- text object
-      { mode = 'x', keys = 'i' },
-      { mode = 'x', keys = 'a' },
-      { mode = 'o', keys = 'i' },
-      { mode = 'o', keys = 'a' },
+            -- text object
+            { mode = 'x', keys = 'i' },
+            { mode = 'x', keys = 'a' },
+            { mode = 'o', keys = 'i' },
+            { mode = 'o', keys = 'a' },
 
-      -- option toggle (mini.basics)
-      { mode = 'n', keys = 'm' },
-    },
+            -- option toggle (mini.basics)
+            { mode = 'n', keys = 'm' },
+        },
 
-    clues = {
-      -- Enhance this by adding descriptions for <Leader> mapping groups
-      clue.gen_clues.builtin_completion(),
-      clue.gen_clues.g(),
-      clue.gen_clues.marks(),
-      clue.gen_clues.registers({ show_contents = true }),
-      clue.gen_clues.windows({ submode_resize = true, submode_move = true }),
-      clue.gen_clues.z(),
-    },
-  })
+        clues = {
+            -- Enhance this by adding descriptions for <Leader> mapping groups
+            clue.gen_clues.builtin_completion(),
+            clue.gen_clues.g(),
+            clue.gen_clues.marks(),
+            clue.gen_clues.registers({ show_contents = true }),
+            clue.gen_clues.windows({ submode_resize = true, submode_move = true }),
+            clue.gen_clues.z(),
+        },
+    })
+end)
+
+now(function()
+    vim.diagnostic.config({
+        virtual_text = true
+    })
+    vim.lsp.config('*', {
+        root_markers = { '.git' },
+    })
+    vim.lsp.config('lua_ls', {
+        cmd = { 'lua-language-server' },
+        filetypes = { 'lua' },
+        on_init = function(client)
+            if client.workspace_folders then
+                local path = client.workspace_folders[1].name
+                if path ~= vim.fn.stdpath('config') and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
+                    return
+                end
+            end
+            client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+                runtime = { version = 'LuaJIT' },
+                workspace = {
+                    checkThirdParty = false,
+                    library = vim.list_extend(vim.api.nvim_get_runtime_file('lua', true), {
+                        "${3rd}/luv/library",
+                        "${3rd}/busted/library",
+                    }),
+                }
+            })
+        end,
+        settings = {
+            Lua = {
+                diagnostics = {
+                    -- 未使用変数は冒頭に`_`をつけていれば警告なし
+                    unusedLocalExclude = { '_*' }
+                }
+            }
+        }
+    })
+    vim.lsp.enable('lua_ls')
+    create_autocmd('LspAttach', {
+        callback = function(args)
+            local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
+
+            vim.keymap.set('n', 'grd', function()
+                vim.lsp.buf.definition()
+            end, { buffer = args.buf, desc = 'vim.lsp.buf.definition()' })
+
+            vim.keymap.set('n', '<space>i', function()
+                vim.lsp.buf.format({ bufnr = args.buf, id = client.id })
+            end, { buffer = args.buf, desc = 'Format buffer' })
+        end,
+    })
+end)
+
+later(function()
+    require('mini.fuzzy').setup()
+    require('mini.completion').setup({
+        lsp_completion = {
+            process_items = MiniFuzzy.process_lsp_items,
+        },
+    })
+
+    -- improve fallback completion
+    vim.opt.complete = { '.', 'w', 'k', 'b', 'u', 't', 'i' }
+    vim.opt.completeopt:append('fuzzy')
+    -- vim.opt.dictionary:append('/path/to/word/dictionary')
+
+    -- define keycodes
+    local keys = {
+        cn = vim.keycode('<c-n>'),
+        cp = vim.keycode('<c-p>'),
+        ct = vim.keycode('<c-t>'),
+        cd = vim.keycode('<c-d>'),
+        cr = vim.keycode('<cr>'),
+        cy = vim.keycode('<c-y>'),
+    }
+
+    -- select by <tab>/<s-tab>
+    vim.keymap.set('i', '<tab>', function()
+        -- popup is visible -> next item
+        -- popup is NOT visible -> add indent
+        return vim.fn.pumvisible() == 1 and keys.cn or keys.ct
+    end, { expr = true, desc = 'Select next item if popup is visible' })
+    vim.keymap.set('i', '<s-tab>', function()
+        -- popup is visible -> previous item
+        -- popup is NOT visible -> remove indent
+        return vim.fn.pumvisible() == 1 and keys.cp or keys.cd
+    end, { expr = true, desc = 'Select previous item if popup is visible' })
+
+    -- complete by <cr>
+    vim.keymap.set('i', '<cr>', function()
+        if vim.fn.pumvisible() == 0 then
+            -- popup is NOT visible -> insert newline
+            return require('mini.pairs').cr()
+        end
+        local item_selected = vim.fn.complete_info()['selected'] ~= -1
+        if item_selected then
+            -- popup is visible and item is selected -> complete item
+            return keys.cy
+        end
+        -- popup is visible but item is NOT selected -> hide popup
+        return keys.cy
+    end, { expr = true, desc = 'Complete current item if item is selected' })
+    require('mini.snippets').setup({
+        mappings = {
+            jump_prev = '<c-k>',
+        },
+    })
+end)
+
+later(function()
+    require('mini.tabline').setup()
+end)
+
+later(function()
+    require('mini.bufremove').setup()
+
+    vim.api.nvim_create_user_command(
+        'Bufdelete',
+        function()
+            MiniBufremove.delete()
+        end,
+        { desc = 'Remove buffer' }
+    )
+end)
+
+now(function()
+    require('mini.files').setup({
+        mappings = {
+            go_in_plus = '<cr>',
+            go_in = 'L',
+            go_out = '<BS>',
+            go_out_plus = 'H',
+            reset = '~',
+        }
+    })
+
+    vim.api.nvim_create_user_command(
+        'Files',
+        function()
+            MiniFiles.open()
+        end,
+        { desc = 'Open file exproler' }
+    )
+
+    vim.keymap.set('n', '<space>e', function()
+        MiniFiles.open()
+    end, { desc = 'Open file explorer' })
+end)
+
+later(function()
+    require('mini.pick').setup()
+
+    vim.ui.select = MiniPick.ui_select
+
+    vim.keymap.set('n', '<space>f', function()
+        MiniPick.builtin.files({ tool = 'git' })
+    end, { desc = 'mini.pick.files' })
 end)
