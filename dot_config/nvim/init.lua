@@ -477,3 +477,66 @@ end)
 later(function ()
     require('mini.diff').setup()
 end)
+
+later(function()
+    require('mini.git').setup()
+
+    vim.keymap.set({ 'n', 'x' }, '<space>gs', MiniGit.show_at_cursor, { desc = 'Show at cursor' })
+end)
+
+later(function()
+    require('mini.operators').setup({
+        replace = { prefix = 'gR' },
+        exchange = { prefix = 'g/' },
+    })
+
+    vim.keymap.set('n', 'RR', 'R', { desc = 'Replace mode' })
+end)
+
+later(function()
+    require('mini.jump').setup({
+        delay = {
+            idle_stop = 10,
+        },
+    })
+end)
+
+later(function()
+    require('mini.jump2d').setup()
+end)
+
+later(function()
+    require('mini.bracketed').setup()
+end)
+
+later(function()
+    require('mini.splitjoin').setup({
+        mappings = {
+            toggle = 'gS',
+            split = 'ss',
+            join = 'sj',
+        },
+    })
+end)
+
+later(function()
+    require('mini.align').setup()
+end)
+
+later(function()
+    local map = require('mini.map')
+    map.setup({
+        integrations = {
+            map.gen_integration.builtin_search(),
+            map.gen_integration.diff(),
+            map.gen_integration.diagnostic(),
+        },
+        symbols = {
+            encode = map.gen_encode_symbols.dot('4x2'),
+            scroll_line = '▶',
+        }
+    })
+    vim.keymap.set('n', 'mmf', MiniMap.toggle_focus, { desc = 'MiniMap.toggle_focus' })
+    vim.keymap.set('n', 'mms', MiniMap.toggle_side, { desc = 'MiniMap.toggle_side' })
+    vim.keymap.set('n', 'mmt', MiniMap.toggle, { desc = 'MiniMap.toggle' })
+end)
