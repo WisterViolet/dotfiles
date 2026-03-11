@@ -1,3 +1,6 @@
+-- cache init.lua
+vim.loader.enable()
+
 -- set line number
 vim.opt.number = true
 vim.opt.cursorline = true
@@ -486,5 +489,3 @@ later(function()
     vim.keymap.set('n', 'mms', MiniMap.toggle_side, { desc = 'MiniMap.toggle_side' })
     vim.keymap.set('n', 'mmt', MiniMap.toggle, { desc = 'MiniMap.toggle' })
 end)
-
-require('wister.bool_fn')
