@@ -15,13 +15,7 @@ vim.opt.scrolloff = 3
 -- connect line right and next line left
 vim.opt.whichwrap = 'b,s,h,l,<,>,[,],~'
 
-vim.api.nvim_create_user_command(
-    'Initlua',
-    function()
-        vim.cmd.edit(vim.fn.stdpath('config') .. '/init.lua')
-    end,
-    {}
-)
+require('wister.user_command')
 
 -- augroup for this config file
 local augroup = vim.api.nvim_create_augroup('init.lua', {})
@@ -54,6 +48,7 @@ vim.keymap.set({ 'n' }, 'p', 'p`]', { desc = 'Paste and move to the end' })
 vim.keymap.set({ 'n' }, 'P', 'P`]', { desc = 'Paste and move to the top' })
 vim.keymap.set({ 'x' }, 'p', 'P', { desc = 'Paste without change register' })
 vim.keymap.set({ 'x' }, 'P', 'p', { desc = 'Paste with change register' })
+vim.keymap.set({ 'n' }, 'nhl', '<cmd>nohl<cr>', { desc = ':nohl' })
 
 -- abbreviation only for ex-command
 local function abbrev_excmd(lhs, rhs, opts)
@@ -234,6 +229,8 @@ later(function()
 
             -- option toggle (mini.basics)
             { mode = 'n', keys = 'm' },
+
+            { mode = 'n', keys = 'mm', desc = '+mini.map' }
         },
 
         clues = {
@@ -248,58 +245,7 @@ later(function()
     })
 end)
 
-now(function()
-    vim.diagnostic.config({
-        virtual_text = true
-    })
-    vim.lsp.config('*', {
-        root_markers = { '.git' },
-    })
-    vim.lsp.config('lua_ls', {
-        cmd = { 'lua-language-server' },
-        filetypes = { 'lua' },
-        on_init = function(client)
-            if client.workspace_folders then
-                local path = client.workspace_folders[1].name
-                if path ~= vim.fn.stdpath('config') and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
-                    return
-                end
-            end
-            client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-                runtime = { version = 'LuaJIT' },
-                workspace = {
-                    checkThirdParty = false,
-                    library = vim.list_extend(vim.api.nvim_get_runtime_file('lua', true), {
-                        "${3rd}/luv/library",
-                        "${3rd}/busted/library",
-                    }),
-                }
-            })
-        end,
-        settings = {
-            Lua = {
-                diagnostics = {
-                    -- 未使用変数は冒頭に`_`をつけていれば警告なし
-                    unusedLocalExclude = { '_*' }
-                }
-            }
-        }
-    })
-    vim.lsp.enable('lua_ls')
-    create_autocmd('LspAttach', {
-        callback = function(args)
-            local client = assert(vim.lsp.get_client_by_id(args.data.client_id))
-
-            vim.keymap.set('n', 'grd', function()
-                vim.lsp.buf.definition()
-            end, { buffer = args.buf, desc = 'vim.lsp.buf.definition()' })
-
-            vim.keymap.set('n', '<space>i', function()
-                vim.lsp.buf.format({ bufnr = args.buf, id = client.id })
-            end, { buffer = args.buf, desc = 'Format buffer' })
-        end,
-    })
-end)
+require('wister.lsp')
 
 later(function()
     require('mini.fuzzy').setup()
@@ -428,20 +374,20 @@ later(function()
     end, { expr = true, desc = 'mini.pick.help' })
 end)
 
-now(function ()
+now(function()
     require('mini.sessions').setup()
     local function is_blank(arg)
         return arg == nil or arg == ''
     end
     local function get_sessions(lead)
-    -- ref: https://qiita.com/delphinus/items/2c993527df40c9ebaea7
+        -- ref: https://qiita.com/delphinus/items/2c993527df40c9ebaea7
         return vim
-        .iter(vim.fs.dir(MiniSessions.config.directory))
-        :map(function(v)
-            local name = vim.fn.fnamemodify(v, ':t:r')
-            return vim.startswith(name, lead) and name or nil
-        end)
-        :totable()
+            .iter(vim.fs.dir(MiniSessions.config.directory))
+            :map(function(v)
+                local name = vim.fn.fnamemodify(v, ':t:r')
+                return vim.startswith(name, lead) and name or nil
+            end)
+            :totable()
     end
     vim.api.nvim_create_user_command('SessionWrite', function(arg)
         local session_name = is_blank(arg.args) and vim.v.this_session or arg.args
@@ -474,7 +420,7 @@ now(function ()
     end, { desc = 'Reveal session' })
 end)
 
-later(function ()
+later(function()
     require('mini.diff').setup()
 end)
 
@@ -540,3 +486,5 @@ later(function()
     vim.keymap.set('n', 'mms', MiniMap.toggle_side, { desc = 'MiniMap.toggle_side' })
     vim.keymap.set('n', 'mmt', MiniMap.toggle, { desc = 'MiniMap.toggle' })
 end)
+
+require('wister.bool_fn')
