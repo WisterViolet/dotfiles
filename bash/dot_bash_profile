@@ -4,4 +4,6 @@
 
 eval $(keychain --eval --quiet github_ed25519)
 
+export PATH=$PATH:$HOME/go/bin/
+
 [[ -f ~/.bashrc ]] && . ~/.bashrc
