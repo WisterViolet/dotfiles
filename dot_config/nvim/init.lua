@@ -181,7 +181,7 @@ later(function()
             I = gen_ai_spec.indent(),
             L = gen_ai_spec.line(),
             N = gen_ai_spec.number(),
-            J = { { '()%d%d%d%d%-%d%d%-%d%d()', '()%d%d%d%d%/%d%d%/%d%d()' } }
+            J = { { '()%d%d%d%d%-%d%d%-%d%d()', '()%d%d%d%d%/%d%d%/%d%d()' } },
         },
     })
 end)
@@ -248,9 +248,11 @@ later(function()
     })
 end)
 
+add('neovim/nvim-lspconfig')
 require('wister.lsp')
 
-later(function()
+
+now(function()
     require('mini.fuzzy').setup()
     require('mini.completion').setup({
         lsp_completion = {
@@ -307,7 +309,14 @@ later(function()
 end)
 
 later(function()
-    require('mini.tabline').setup()
+    require('mini.tabline').setup({
+        format = function(buf_id, label)
+            local suffix = vim.bo[buf_id].modified and '+' or ''
+            return MiniTabline.default_format(buf_id, label) .. suffix
+        end
+    })
+    vim.api.nvim_set_hl(0, 'MiniTablineCurrent', { bg = "#4ad2ff", fg = "#242424", bold = true })
+    vim.api.nvim_set_hl(0, 'MiniTablineModifiedCurrent', { bg = "#4ad2ff", fg = "#242424", bold = true })
 end)
 
 later(function()
