@@ -53,6 +53,9 @@ vim.keymap.set({ 'x' }, 'p', 'P', { desc = 'Paste without change register' })
 vim.keymap.set({ 'x' }, 'P', 'p', { desc = 'Paste with change register' })
 vim.keymap.set({ 'n' }, 'nhl', '<cmd>nohl<cr>', { desc = ':nohl' })
 
+-- Terminal
+vim.keymap.set({ 'n' }, 't@', '<cmd>belowright new<cr><cmd>resize 15<cr><cmd>terminal<cr>i', { desc = 'open terminal' })
+
 -- abbreviation only for ex-command
 local function abbrev_excmd(lhs, rhs, opts)
     vim.keymap.set('ca', lhs, function()
