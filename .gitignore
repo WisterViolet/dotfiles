@@ -1,0 +1,8 @@
+# ignore rclone config
+dot_config/rclone/rclone.conf
+
+# ignore go
+dot_config/go
+
+#ignore btop
+dot_config/btop
